@@ -1,0 +1,134 @@
+/* Table of Contents Styles */
+.gh-sidebar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 280px;
+    height: 100%;
+    grid-column: wide-end / full-end;
+    z-index: 1000; /* TOC가 다른 요소들 위에 표시되도록 */
+}
+
+.gh-toc {
+    position: fixed;
+    top: 50vh;
+    right: 20px; /* 오른쪽 여백 추가 */
+    transform: translateY(-50%);
+    width: 240px; /* 고정 너비 설정 */
+    max-height: calc(80vh - 40px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--light-gray-color) transparent;
+    margin: 20px 0;
+    transition: none; /* JavaScript에서 제어하므로 CSS transition 제거 */
+    will-change: top; /* 성능 최적화 */
+    padding: 20px;
+    background: var(--white-color);
+    border: 1px solid var(--light-gray-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1001; /* 최상위 레이어 */
+}
+
+.gh-toc::-webkit-scrollbar {
+    width: 4px;
+}
+
+.gh-toc::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.gh-toc::-webkit-scrollbar-thumb {
+    background: var(--light-gray-color);
+    border-radius: 2px;
+}
+
+.gh-toc::-webkit-scrollbar-thumb:hover {
+    background: var(--mid-gray-color);
+}
+
+.gh-toc-title {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--dark-gray-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.gh-toc-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.gh-toc-list li {
+    margin: 0;
+    padding: 0;
+}
+
+.gh-toc-list a {
+    display: block;
+    padding: 6px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--secondary-text-color);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    padding-left: 12px;
+    transition: all 0.2s ease;
+}
+
+.gh-toc-list a:hover {
+    color: var(--primary-color);
+    border-left-color: var(--primary-color);
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+}
+
+.gh-toc-list a.active {
+    color: var(--primary-color);
+    border-left-color: var(--primary-color);
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+    font-weight: 600;
+}
+
+/* Nested headings */
+.gh-toc-list ul {
+    margin: 0;
+    padding-left: 15px;
+    list-style: none;
+}
+
+.gh-toc-list ul a {
+    font-size: 13px;
+    padding: 4px 0;
+    padding-left: 8px;
+}
+
+.gh-toc-list ul ul a {
+    font-size: 12px;
+    padding: 3px 0;
+    padding-left: 6px;
+}
+
+/* Mobile TOC adjustments */
+@media (max-width: 1024px) {
+    .gh-sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        margin-top: 0;
+        grid-column: main;
+    }
+    
+    .gh-toc {
+        position: static;
+        top: auto;
+        transform: none;
+        max-height: none;
+        margin-bottom: 30px;
+        transition: none;
+    }
+}
+
+ 
