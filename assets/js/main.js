@@ -138,74 +138,52 @@ function dimmer(action, speed) {
 
 function initTableOfContents() {
     'use strict';
-    
     // Only run on single post pages
     if (!document.querySelector('.single-post')) {
         return;
     }
-    
     var tocContainer = document.querySelector('.gh-toc');
     if (!tocContainer) {
-        console.log('TOC container not found');
         return;
     }
-    
     // 기존 내용 제거
     tocContainer.innerHTML = '';
-    
     var headings = document.querySelectorAll('.gh-content h1, .gh-content h2, .gh-content h3, .gh-content h4, .gh-content h5, .gh-content h6');
-    
-    console.log('Found headings:', headings.length);
-    
     if (headings.length < 3) {
-        // Hide TOC if there are fewer than 3 headings
         tocContainer.style.display = 'none';
         return;
     }
-    
-    // Create TOC structure
-    var tocTitle = document.createElement('h4');
-    tocTitle.className = 'gh-toc-title';
-    tocTitle.textContent = '목차';
-    
+    // TOC 토글 버튼 생성
+    var tocToggle = document.createElement('div');
+    tocToggle.className = 'gh-toc-toggle';
+    tocToggle.innerHTML = '<span class="gh-toc-toggle-icon">▼</span> 목차';
+    tocContainer.appendChild(tocToggle);
+    // TOC 구조 생성
     var tocList = document.createElement('ul');
     tocList.className = 'gh-toc-list';
-    
-    // Add IDs to headings and create TOC links
     headings.forEach(function(heading, index) {
         var id = 'heading-' + index;
         heading.id = id;
-        
         var listItem = document.createElement('li');
         var link = document.createElement('a');
         link.href = '#' + id;
         link.textContent = heading.textContent;
         link.className = 'toc-link';
-        
-        // Add indentation based on heading level
+        // header 레벨별 클래스 추가
         var level = parseInt(heading.tagName.charAt(1));
-        if (level > 2) {
-            var subList = tocList.querySelector('ul') || tocList;
-            if (!subList.querySelector('ul')) {
-                var newSubList = document.createElement('ul');
-                subList.appendChild(newSubList);
-                subList = newSubList;
-            }
-        }
-        
+        link.classList.add('toc-level-' + level);
         listItem.appendChild(link);
         tocList.appendChild(listItem);
     });
-    
-    tocContainer.appendChild(tocTitle);
     tocContainer.appendChild(tocList);
-    
+    // TOC 토글 기능
+    tocToggle.addEventListener('click', function() {
+        tocContainer.classList.toggle('gh-toc-collapsed');
+    });
     // TOC를 보이게 설정
     tocContainer.style.display = 'block';
-    
     // Add scroll spy functionality
     addScrollSpy();
-    
     // Add dynamic TOC movement
     addDynamicTocMovement();
 }
