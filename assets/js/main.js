@@ -13,6 +13,7 @@ $(function () {
     // TOC 초기화를 약간 지연시켜 DOM이 완전히 로드된 후 실행
     setTimeout(function() {
         initTableOfContents();
+        initMobileToc();
     }, 100);
 
     // tag-name에서 숫자+점+공백 패턴을 제거 (예: '1. 제목' -> '제목')
@@ -265,4 +266,61 @@ function addDynamicTocMovement() {
 
     // 초기 위치
     updateTocPosition(window.scrollY);
+}
+
+// 모바일 TOC 관련 함수
+function initMobileToc() {
+    if (window.innerWidth > 1024) return;
+    var btn = document.querySelector('.mobile-toc-btn');
+    var overlay = document.querySelector('.mobile-toc-overlay');
+    var list = document.querySelector('.mobile-toc-list');
+    var tocContainer = document.querySelector('.gh-toc');
+    if (!btn || !overlay || !list || !tocContainer) return;
+
+    // 기존 gh-toc에서 목차 ul만 추출하여 복사
+    var tocList = tocContainer.querySelector('.gh-toc-list');
+    if (tocList) {
+        list.innerHTML = '';
+        list.appendChild(tocList.cloneNode(true));
+    }
+
+    // 버튼 클릭 시 오버레이 표시
+    btn.addEventListener('click', function() {
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+    // 오버레이 바깥 클릭 시 닫기
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+    // TOC 링크 클릭 시 오버레이 닫기
+    list.addEventListener('click', function(e) {
+        if (e.target.tagName === 'A') {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+
+    // 스크롤 방향 감지하여 버튼 show/hide
+    var lastScroll = window.scrollY;
+    var ticking = false;
+    function onScroll() {
+        var curr = window.scrollY;
+        if (curr > lastScroll + 10) {
+            btn.classList.add('hide');
+        } else if (curr < lastScroll - 10) {
+            btn.classList.remove('hide');
+        }
+        lastScroll = curr;
+        ticking = false;
+    }
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            window.requestAnimationFrame(onScroll);
+            ticking = true;
+        }
+    });
 }
