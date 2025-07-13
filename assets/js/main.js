@@ -15,12 +15,84 @@ $(function () {
         initTableOfContents();
     }, 100);
 
+    // 브라우저 탭(문서 title)에서 숫자+점+공백 패턴 제거
+    if (document.title) {
+        document.title = document.title.replace(/^\d+\.\s*/, '');
+    }
+
     // tag-name에서 숫자+점+공백 패턴을 제거 (예: '1. 제목' -> '제목')
     $('.tag-name, .term-name').each(function() {
         var text = $(this).text();
         var newText = text.replace(/^\d+\.\s*/, '');
         $(this).text(newText);
     });
+
+    // 게시글 내 .post-tag의 텍스트와 title에서 숫자+점+공백 패턴 제거
+    $('.post-tag').each(function() {
+        var text = $(this).text();
+        var newText = text.replace(/^\d+\.\s*/, '');
+        $(this).text(newText);
+        var title = $(this).attr('title');
+        if (title) {
+            var newTitle = title.replace(/^\d+\.\s*/, '');
+            $(this).attr('title', newTitle);
+        }
+    });
+
+    // chip UI를 public tag(공개 태그) 페이지에서만 보이게 하고,
+    // 해당 페이지의 게시글에 실제로 존재하는 internal tag만 chip으로 보여주기
+    if (document.body.classList.contains('tag-template')) {
+        // tag 페이지에서만 동작
+        (async function() {
+            const apiKey = '82b43c471ed5ad2a555dd38f3d';
+            const apiUrl = window.location.origin;
+            try {
+                // 1. 현재 페이지의 게시글에서 internal tag만 추출
+                // 모든 게시글의 태그를 수집
+                const postTags = [];
+                document.querySelectorAll('.post-feed [class*="post"]').forEach(post => {
+                    // 각 포스트의 태그 링크를 모두 수집
+                    post.querySelectorAll('.post-tag').forEach(tagEl => {
+                        const tagName = tagEl.textContent.trim();
+                        if (tagName.startsWith('#')) {
+                            postTags.push(tagName.replace(/^#/, ''));
+                        }
+                    });
+                });
+                // 중복 제거
+                const uniqueInternalTags = [...new Set(postTags)];
+                if (uniqueInternalTags.length === 0) {
+                    $('.internal-tags-chips').hide();
+                    return;
+                }
+                // 2. internal 태그 정보(슬러그 등)를 API로 가져와서 매칭
+                const res = await fetch(`${apiUrl}/ghost/api/content/tags/?filter=visibility:internal&limit=all&key=${apiKey}`);
+                const data = await res.json();
+                if (data.tags && data.tags.length > 0) {
+                    // 현재 페이지 게시글에 실제로 존재하는 internal tag만 chip으로 생성
+                    const chips = data.tags
+                        .filter(tag => uniqueInternalTags.includes(tag.name.replace(/^#/, '')))
+                        .map(tag => {
+                            const cleanName = tag.name.replace(/^#/, '');
+                            const cleanSlug = tag.slug.replace(/^#/, '');
+                            return `<a class="chip" href="/tag/${cleanSlug}/">#${cleanName}</a>`;
+                        }).join('');
+                    if (chips) {
+                        $('.internal-tags-chips').html(chips).show();
+                    } else {
+                        $('.internal-tags-chips').hide();
+                    }
+                } else {
+                    $('.internal-tags-chips').hide();
+                }
+            } catch (e) {
+                $('.internal-tags-chips').hide();
+            }
+        })();
+    } else {
+        // tag 페이지가 아니면 chip UI 숨김
+        $('.internal-tags-chips').hide();
+    }
 });
 
 window.addEventListener('scroll', function () {
