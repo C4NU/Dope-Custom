@@ -192,41 +192,32 @@ function initTableOfContents() {
 
 function addScrollSpy() {
     'use strict';
-    
+
     var headings = document.querySelectorAll('.gh-content h1, .gh-content h2, .gh-content h3, .gh-content h4, .gh-content h5, .gh-content h6');
     var tocLinks = document.querySelectorAll('.gh-toc-list a');
-    
-    if (!headings.length || !tocLinks.length) {
-        return;
-    }
-    
-    var observerOptions = {
-        rootMargin: '-20% 0px -80% 0px',
-        threshold: 0
-    };
-    
-    var observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            var id = entry.target.id;
-            var link = document.querySelector('.gh-toc-list a[href="#' + id + '"]');
-            
-            if (entry.isIntersecting) {
-                // Remove active class from all links
-                tocLinks.forEach(function(link) {
-                    link.classList.remove('active');
-                });
-                
-                // Add active class to current link
-                if (link) {
-                    link.classList.add('active');
-                }
+
+    if (!headings.length || !tocLinks.length) return;
+
+    function onScroll() {
+        var scrollPosition = window.scrollY + 100; // 헤더 등 오프셋
+        var activeIndex = 0;
+        for (var i = 0; i < headings.length; i++) {
+            if (headings[i].offsetTop <= scrollPosition) {
+                activeIndex = i;
+            }
+        }
+        tocLinks.forEach(function(link, idx) {
+            if (idx === activeIndex) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
             }
         });
-    }, observerOptions);
-    
-    headings.forEach(function(heading) {
-        observer.observe(heading);
-    });
+    }
+
+    window.addEventListener('scroll', onScroll);
+    // 페이지 로드시 한 번 실행
+    onScroll();
 }
 
 function addDynamicTocMovement() {
