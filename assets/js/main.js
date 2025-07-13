@@ -14,6 +14,13 @@ $(function () {
     setTimeout(function() {
         initTableOfContents();
     }, 100);
+
+    // tag-name에서 숫자+점+공백 패턴을 제거 (예: '1. 제목' -> '제목')
+    $('.tag-name').each(function() {
+        var text = $(this).text();
+        var newText = text.replace(/^\d+\.\s*/, '');
+        $(this).text(newText);
+    });
 });
 
 window.addEventListener('scroll', function () {

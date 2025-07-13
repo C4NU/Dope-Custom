@@ -13,8 +13,18 @@
     {{/tag}}
 
     <div class="post-feed gh-feed">
+        {{!-- featured 포스트만 먼저 출력 --}}
         {{#foreach posts}}
-            {{> "loop"}}
+            {{#if featured}}
+                {{> "loop"}}
+            {{/if}}
+        {{/foreach}}
+
+        {{!-- featured가 아닌 포스트를 그 다음에 출력 --}}
+        {{#foreach posts}}
+            {{#unless featured}}
+                {{> "loop"}}
+            {{/unless}}
         {{/foreach}}
     </div>
 
