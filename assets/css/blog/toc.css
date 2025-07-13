@@ -1,33 +1,35 @@
 /* Table of Contents Styles */
+.post-content.gh-content.gh-canvas {
+    position: relative;
+}
+
 .gh-sidebar {
     position: absolute;
     top: 0;
     right: 0;
     width: 280px;
     height: 100%;
-    grid-column: wide-end / full-end;
-    z-index: 1000; /* TOC가 다른 요소들 위에 표시되도록 */
+    z-index: 1000;
 }
 
 .gh-toc {
     position: fixed;
-    top: 50vh;
-    right: 20px; /* 오른쪽 여백 추가 */
-    transform: translateY(-50%);
-    width: 240px; /* 고정 너비 설정 */
-    max-height: calc(80vh - 40px);
+    left: 20px;
+    width: 240px;
+    /* top은 JS에서 제어 */
+    max-height: 80vh;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--light-gray-color) transparent;
     margin: 20px 0;
-    transition: none; /* JavaScript에서 제어하므로 CSS transition 제거 */
-    will-change: top; /* 성능 최적화 */
+    transition: none;
+    will-change: top;
     padding: 20px;
     background: var(--white-color);
     border: 1px solid var(--light-gray-color);
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1001; /* 최상위 레이어 */
+    z-index: 1001;
 }
 
 .gh-toc::-webkit-scrollbar {
