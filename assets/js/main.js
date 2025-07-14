@@ -16,11 +16,17 @@ $(function () {
         initMobileToc();
     }, 100);
 
-    // tag-name에서 숫자+점+공백 패턴을 제거 (예: '1. 제목' -> '제목')
-    $('.tag-name, .term-name').each(function() {
+    // tag-name, term-name, post-tag에서 숫자+점+공백 패턴을 제거 (예: '1. 제목' -> '제목')
+    $('.tag-name, .term-name, .post-tag').each(function() {
         var text = $(this).text();
         var newText = text.replace(/^\d+\.\s*/, '');
         $(this).text(newText);
+        // title 속성도 교체
+        if (this.hasAttribute('title')) {
+            var title = $(this).attr('title');
+            var newTitle = title.replace(/^\d+\.\s*/, '');
+            $(this).attr('title', newTitle);
+        }
     });
 });
 
@@ -187,6 +193,14 @@ function initTableOfContents() {
     // TOC 토글 기능
     tocToggle.addEventListener('click', function() {
         tocContainer.classList.toggle('gh-toc-collapsed');
+        // 데스크탑에서만 dimmer 토글
+        if (window.innerWidth > 1366) {
+            if (!tocContainer.classList.contains('gh-toc-collapsed')) {
+                dimmer('open', 'medium');
+            } else {
+                dimmer('close', 'medium');
+            }
+        }
     });
     // TOC를 보이게 설정
     tocContainer.style.display = 'block';
@@ -270,7 +284,7 @@ function addDynamicTocMovement() {
 
 // 모바일 TOC 관련 함수
 function initMobileToc() {
-    if (window.innerWidth > 1024) return;
+    if (window.innerWidth > 1366) return;
     var btn = document.querySelector('.mobile-toc-btn');
     var overlay = document.querySelector('.mobile-toc-overlay');
     var list = document.querySelector('.mobile-toc-list');
@@ -288,12 +302,14 @@ function initMobileToc() {
     btn.addEventListener('click', function() {
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
+        dimmer('open', 'medium');
     });
     // 오버레이 바깥 클릭 시 닫기
     overlay.addEventListener('click', function(e) {
         if (e.target === overlay) {
             overlay.classList.remove('active');
             document.body.style.overflow = '';
+            dimmer('close', 'medium');
         }
     });
     // TOC 링크 클릭 시 오버레이 닫기
@@ -301,6 +317,7 @@ function initMobileToc() {
         if (e.target.tagName === 'A') {
             overlay.classList.remove('active');
             document.body.style.overflow = '';
+            dimmer('close', 'medium');
         }
     });
 
