@@ -1,4 +1,4 @@
-<article class="{{post_class}}{{#unless feature_image}} no-image{{/unless}}">
+<article class="{{post_class}}{{#unless feature_image}} no-image{{/unless}}" data-internal-tags="{{#foreach tags visibility="internal"}}{{slug}}{{#unless @last}},{{/unless}}{{/foreach}}">
     {{#if feature_image}}
         <figure class="post-media">
             <div class="u-placeholder same-height rectangle">

@@ -7,8 +7,12 @@ $(function () {
     'use strict';
     tagFeed();
     parallax();
-    loadMore();
+    // 태그 페이지에서는 커스텀 렌더링(get limit=all)으로 무한스크롤을 비활성화
+    if (!document.body.classList.contains('tag-template')) {
+        loadMore();
+    }
     offCanvas();
+    initInternalTagFilter();
     
     // TOC 초기화를 약간 지연시켜 DOM이 완전히 로드된 후 실행
     setTimeout(function() {
@@ -155,6 +159,131 @@ function dimmer(action, speed) {
             dimmer.fadeOut(speed);
             break;
     }
+}
+
+function initInternalTagFilter() {
+    'use strict';
+    var container = document.querySelector('.internal-tag-filter');
+    var feed = document.querySelector('.post-feed.gh-feed');
+    if (!container || !feed) return;
+
+    var articles = Array.prototype.slice.call(feed.querySelectorAll('article'));
+    if (!articles.length) return;
+
+    // 내부 태그 수집 (loop.hbs에서 모든 태그 슬러그가 주입되며, 여기서 hash-만 선별)
+    var internalSet = new Set();
+    articles.forEach(function (article) {
+        var data = article.getAttribute('data-internal-tags') || '';
+        data.split(',')
+            .map(function (s) { return s.trim(); })
+            .filter(function (slug) { return /^hash-/.test(slug); })
+            .forEach(function (slug) {
+                internalSet.add(slug);
+        });
+    });
+
+    if (!internalSet.size) {
+        container.style.display = 'none';
+        return;
+    }
+
+    // 칩 UI 구성
+    container.innerHTML = '';
+    var list = document.createElement('div');
+    list.className = 'chip-list';
+
+    function createChip(label, value, isActive) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chip' + (isActive ? ' active' : '');
+        btn.setAttribute('data-value', value);
+        btn.textContent = label;
+        return btn;
+    }
+
+    // 전체 칩 (선택 해제용)
+    list.appendChild(createChip('전체', 'all', true));
+
+    // 계절 우선순위 정렬: spring, summer, autumn, winter
+    var seasonalPriority = ['hash-spring', 'hash-summer', 'hash-autumn', 'hash-winter'];
+    function priorityIndex(slug) {
+        var idx = seasonalPriority.indexOf(slug.toLowerCase());
+        return idx === -1 ? Number.POSITIVE_INFINITY : idx;
+    }
+
+    Array.from(internalSet)
+        .sort(function (a, b) {
+            var pa = priorityIndex(a);
+            var pb = priorityIndex(b);
+            if (pa !== pb) return pa - pb; // 우선순위 먼저
+            // 우선순위에 없으면 알파벳 순
+            return a.localeCompare(b);
+        })
+        .forEach(function (slug) {
+            var label = slug.replace(/^hash-/, '#');
+            list.appendChild(createChip(label, slug, false));
+        });
+
+    container.appendChild(list);
+
+    // 필터 동작 (다중 선택 OR 매칭)
+    function getSelectedValues() {
+        var active = Array.prototype.slice.call(list.querySelectorAll('.chip.active'))
+            .map(function (el) { return el.getAttribute('data-value'); })
+            .filter(function (v) { return v && v !== 'all'; });
+        return active;
+    }
+
+    function applyFilter() {
+        var selected = getSelectedValues();
+        var useAll = selected.length === 0; // '전체'와 동일한 상태
+        // '전체' 칩의 active 상태 동기화
+        var allChip = list.querySelector('.chip[data-value="all"]');
+        if (allChip) {
+            if (useAll) {
+                allChip.classList.add('active');
+            } else {
+                allChip.classList.remove('active');
+            }
+        }
+
+        articles.forEach(function (article) {
+            var tags = (article.getAttribute('data-internal-tags') || '')
+                .split(',')
+                .map(function (s) { return s.trim(); })
+                .filter(function (slug) { return /^hash-/.test(slug); });
+            var show = useAll || selected.some(function (val) { return tags.indexOf(val) !== -1; });
+            article.style.display = show ? '' : 'none';
+        });
+    }
+
+    list.addEventListener('click', function (e) {
+        if (!(e.target && e.target.classList.contains('chip'))) return;
+        var value = e.target.getAttribute('data-value');
+
+        if (value === 'all') {
+            // 전체 클릭 시 나머지 해제, 전체만 active
+            Array.prototype.slice.call(list.querySelectorAll('.chip'))
+                .forEach(function (el) { el.classList.remove('active'); });
+            e.target.classList.add('active');
+            applyFilter();
+            return;
+        }
+
+        // 일반 칩은 토글
+        e.target.classList.toggle('active');
+
+        // 일반 칩이 하나라도 active면 전체는 비활성화
+        var allChip = list.querySelector('.chip[data-value="all"]');
+        if (allChip) allChip.classList.remove('active');
+
+        // 선택이 전혀 없다면 전체를 자동 활성화
+        if (getSelectedValues().length === 0 && allChip) {
+            allChip.classList.add('active');
+        }
+
+        applyFilter();
+    });
 }
 
 function initTableOfContents() {

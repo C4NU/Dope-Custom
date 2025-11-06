@@ -4,6 +4,55 @@
     overflow: hidden;
 }
 
+/* 내부 태그 필터 칩 */
+.internal-tag-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin: 12px 0 24px;
+}
+
+.internal-tag-filter .chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.internal-tag-filter .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    font-size: 1.3rem;
+    line-height: 1;
+    color: var(--secondary-text-color);
+    background: var(--light-gray-color);
+    border-radius: 999px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.internal-tag-filter .chip:hover {
+    background: var(--mid-gray-color);
+}
+
+.internal-tag-filter .chip.active {
+    color: var(--white-color);
+    background: var(--primary-text-color);
+    border-color: var(--primary-text-color);
+}
+
+@media (max-width: 767px) {
+    .internal-tag-filter {
+        margin: 8px 0 16px;
+    }
+    .internal-tag-filter .chip {
+        font-size: 1.2rem;
+        padding: 6px 10px;
+    }
+}
+
 .tag::before {
     position: absolute;
     top: 0;

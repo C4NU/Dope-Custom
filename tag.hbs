@@ -12,20 +12,26 @@
         </section>
     {{/tag}}
 
-    <div class="post-feed gh-feed">
-        {{!-- featured 포스트만 먼저 출력 --}}
-        {{#foreach posts}}
-            {{#if featured}}
-                {{> "loop"}}
-            {{/if}}
-        {{/foreach}}
+    <div class="internal-tag-filter" aria-label="내부 태그 필터" role="group">
+        <!-- JS에서 칩이 주입됩니다. -->
+    </div>
 
-        {{!-- featured가 아닌 포스트를 그 다음에 출력 --}}
-        {{#foreach posts}}
-            {{#unless featured}}
-                {{> "loop"}}
-            {{/unless}}
-        {{/foreach}}
+    <div class="post-feed gh-feed">
+        {{!-- 내부 태그까지 포함하여 이 태그의 포스트를 한번에 가져오기 --}}
+        {{#tag}}
+            {{#get "posts" filter=(concat "tag:" slug) include="tags" limit="all" as |tagPosts|}}
+                {{#foreach tagPosts}}
+                    {{#if featured}}
+                        {{> "loop"}}
+                    {{/if}}
+                {{/foreach}}
+                {{#foreach tagPosts}}
+                    {{#unless featured}}
+                        {{> "loop"}}
+                    {{/unless}}
+                {{/foreach}}
+            {{/get}}
+        {{/tag}}
     </div>
 
 </main>
