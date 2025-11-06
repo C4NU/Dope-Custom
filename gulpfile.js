@@ -64,7 +64,17 @@ function js(done) {
 }
 
 function zipper(done) {
-    const filename = require('./package.json').name + '.zip';
+    const pkg = require('./package.json');
+    const pad = (n) => String(n).padStart(2, '0');
+    const now = new Date();
+    const yyyy = now.getFullYear();
+    const MM = pad(now.getMonth() + 1);
+    const dd = pad(now.getDate());
+    const HH = pad(now.getHours());
+    const mm = pad(now.getMinutes());
+    const ss = pad(now.getSeconds());
+    const stamp = `${yyyy}${MM}${dd}-${HH}${mm}${ss}`;
+    const filename = `${pkg.name}_v${pkg.version}_${stamp}.zip`;
 
     pump([
         src([
