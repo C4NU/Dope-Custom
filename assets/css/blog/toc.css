@@ -1,4 +1,7 @@
 /* Table of Contents Styles */
+.mobile-toc-btn {
+    display: none;
+}
 .post-content.gh-content.gh-canvas {
     position: relative;
 }
