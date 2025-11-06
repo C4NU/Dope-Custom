@@ -16,6 +16,13 @@ $(function () {
         initMobileToc();
     }, 100);
 
+    // 브라우저 탭 제목에서 숫자+점+공백 패턴을 제거 (예: '1. 제목' -> '제목')
+    var pageTitle = document.title;
+    var newPageTitle = pageTitle.replace(/^\d+\.\s*/, '');
+    if (newPageTitle !== pageTitle) {
+        document.title = newPageTitle;
+    }
+
     // tag-name, term-name, post-tag에서 숫자+점+공백 패턴을 제거 (예: '1. 제목' -> '제목')
     $('.tag-name, .term-name, .post-tag').each(function() {
         var text = $(this).text();
