@@ -60,3 +60,26 @@
     font-weight: 700;
     src: local(""), url("../fonts/pt-serif-v16-latin-700italic.woff2") format("woff2"), url("../fonts/pt-serif-v16-latin-700italic.woff") format("woff");
 }
+
+@font-face {
+    font-family: 'LINESeed';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Rg.woff2') format('woff2');
+    font-weight: 400;
+    unicode-range: U+AC00-D7A3;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'LINESeed';
+    src: url('../fonts/LINESeedJP/LINESeedJP_OTF_Rg.woff2') format('woff2');
+    font-weight: 400;
+    unicode-range: U+3041-3096, U+309D, U+309E, U+30A1-30FA, U+30FC, U+4E00-9FEA;
+    font-style: normal;
+}
+
+/* Windows Font Smoothing Improvement */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}

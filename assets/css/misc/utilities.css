@@ -35,3 +35,14 @@
 .u-placeholder.square {
     padding-bottom: 100%;
 }
+
+/* Custom Font Family Settings */
+body, header, footer {
+    font-family: 'Barlow', 'LINESeed', sans-serif;
+    font-weight: 400;
+}
+
+/* Ghost Content Blocks */
+.kg-gallery-card {
+    grid-column: main !important;
+}

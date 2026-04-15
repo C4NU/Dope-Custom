@@ -202,7 +202,7 @@ function initInternalTagFilter() {
     }
 
     // 전체 칩 (선택 해제용)
-    list.appendChild(createChip('전체', 'all', true));
+    list.appendChild(createChip(window.theme_config.translations.all || 'All', 'all', true));
 
     // 계절 우선순위 정렬: spring, summer, autumn, winter
     var seasonalPriority = ['hash-spring', 'hash-summer', 'hash-autumn', 'hash-winter'];
@@ -306,7 +306,7 @@ function initTableOfContents() {
     // TOC 토글 버튼 생성
     var tocToggle = document.createElement('div');
     tocToggle.className = 'gh-toc-toggle';
-    tocToggle.innerHTML = '<span class="gh-toc-toggle-icon">▼</span> 목차';
+    tocToggle.innerHTML = '<span class="gh-toc-toggle-icon">▼</span> ' + (window.theme_config.translations.toc || 'TOC');
     tocContainer.appendChild(tocToggle);
     // TOC 구조 생성
     var tocList = document.createElement('ul');

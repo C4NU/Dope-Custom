@@ -7,6 +7,20 @@
     <title>{{meta_title}}</title>
     <link rel="stylesheet" href="{{asset "built/screen.css"}}">
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SZYMQQQTYQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-SZYMQQQTYQ');
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,200;0,400;1,200&display=swap" rel="stylesheet">
+
     {{{block "styles"}}}
 
     {{ghost_head}}
@@ -43,12 +57,21 @@
                 </nav>
             {{/if}}
             <div class="gh-powered-by">
-                <a href="https://ghost.org/" target="_blank" rel="noopener">Powered by Ghost</a>
+                <a href="https://ghost.org/" target="_blank" rel="noopener">{{t "Powered by {ghost}" ghost="Ghost"}}</a>
             </div>
         </div>
     </footer>
 
 </div>
+
+<script>
+    window.theme_config = {
+        translations: {
+            toc: "{{t "Table of Contents"}}",
+            all: "{{t "All"}}"
+        }
+    };
+</script>
 
 {{> "side-menu"}}
 
