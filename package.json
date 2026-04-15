@@ -72,6 +72,7 @@
     },
     "scripts": {
         "dev": "gulp",
+        "build": "gulp build",
         "test": "gscan .",
         "zip": "gulp zip"
     },
