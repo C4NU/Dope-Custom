@@ -7,6 +7,7 @@ $(function () {
     'use strict';
     tagFeed();
     parallax();
+    initHaptics();
     // 태그 페이지에서는 커스텀 렌더링(get limit=all)으로 무한스크롤을 비활성화
     if (!document.body.classList.contains('tag-template')) {
         loadMore();
@@ -284,6 +285,49 @@ function initInternalTagFilter() {
 
         applyFilter();
     });
+}
+
+function initHaptics() {
+    'use strict';
+
+    if (!('vibrate' in navigator)) return;
+
+    var lastTriggeredAt = 0;
+    var interactiveSelector = [
+        'a[href]',
+        'button',
+        '.burger',
+        '.canvas-close',
+        '.chip',
+        '.owl-prev',
+        '.owl-next',
+        '[data-ghost-search]',
+        '.mobile-toc-btn'
+    ].join(',');
+
+    function trigger(pattern) {
+        var now = Date.now();
+        if (now - lastTriggeredAt < 80) return;
+        lastTriggeredAt = now;
+        navigator.vibrate(pattern || 12);
+    }
+
+    document.addEventListener('click', function (event) {
+        var target = event.target.closest(interactiveSelector);
+        if (!target) return;
+
+        if (
+            target.classList.contains('canvas-close') ||
+            target.classList.contains('owl-prev') ||
+            target.classList.contains('owl-next') ||
+            target.classList.contains('chip')
+        ) {
+            trigger([18, 20, 12]);
+            return;
+        }
+
+        trigger(12);
+    }, {passive: true});
 }
 
 function initTableOfContents() {
