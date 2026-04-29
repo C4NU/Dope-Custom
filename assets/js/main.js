@@ -290,8 +290,9 @@ function initInternalTagFilter() {
 function initHaptics() {
     'use strict';
 
-    if (!('vibrate' in navigator)) return;
+    if (!window.WebHaptics) return;
 
+    var haptics = new window.WebHaptics({showSwitch: false});
     var lastTriggeredAt = 0;
     var interactiveSelector = [
         'a[href]',
@@ -309,7 +310,7 @@ function initHaptics() {
         var now = Date.now();
         if (now - lastTriggeredAt < 80) return;
         lastTriggeredAt = now;
-        navigator.vibrate(pattern || 12);
+        haptics.trigger(pattern || 'selection');
     }
 
     document.addEventListener('click', function (event) {
@@ -322,11 +323,11 @@ function initHaptics() {
             target.classList.contains('owl-next') ||
             target.classList.contains('chip')
         ) {
-            trigger([18, 20, 12]);
+            trigger('nudge');
             return;
         }
 
-        trigger(12);
+        trigger('selection');
     }, {passive: true});
 }
 
