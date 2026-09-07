@@ -1,0 +1,10 @@
+{
+  "block_sha256": "b62bee69c71ee6521105785b9a86c7bb446d3d7bfb030071e7e2c463c0ea5839",
+  "files": {
+    "instructions/documentation.md": "08adb1284ef9eceb21f4afb89545af35e785cd7a672571683a951db861d7b337"
+  },
+  "schema_version": 1,
+  "source_repository": "studio-artifakt/knowledge",
+  "source_sha256": "8b4b2ba30f8a2835cca746a0e438906b8df829e9638cda5808141c87754377f4",
+  "target_id": "ghost-theme-dope"
+}
